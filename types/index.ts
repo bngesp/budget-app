@@ -31,3 +31,19 @@ export interface MonthSummary {
   balance: number;
   byCategory: Record<string, number>;
 }
+
+export interface IncomeSource {
+  id: number;
+  name: string;
+  amount: number;
+  icon: string;
+  active: number; // 1 = active, 0 = suspended
+}
+
+export interface SavingsEntry {
+  id: number;
+  month: string;        // 'YYYY-MM'
+  calculated: number;
+  actual: number | null; // null means not yet entered, display `calculated`
+  note: string | null;
+}
