@@ -1,0 +1,200 @@
+<h2>UI épurée — 2 directions</h2>
+<p class="subtitle">Même contenu, deux approches visuelles. Laquelle te parle le plus ?</p>
+
+<div class="split" style="gap: 2rem; align-items: flex-start; margin-top: 1.5rem;">
+
+  <!-- DIRECTION A — Minimaliste claire -->
+  <div style="flex:1;">
+    <div style="text-align:center; margin-bottom:10px;">
+      <span style="background:#185FA5; color:white; border-radius:20px; padding:4px 14px; font-size:12px; font-weight:600;">Option A — Blanc & bleu</span>
+    </div>
+    <div class="mockup" data-choice="a" onclick="toggleSelect(this)" style="cursor:pointer;">
+      <div class="mockup-header">📱 Épargne</div>
+      <div class="mockup-body" style="padding:0; font-size:13px; background:#ffffff;">
+
+        <div style="padding:28px 20px 20px; text-align:center; border-bottom:1px solid #f0f0f0;">
+          <div style="font-size:12px; color:#aaa; letter-spacing:.5px; text-transform:uppercase; margin-bottom:6px;">Mars 2026</div>
+          <div style="font-size:36px; font-weight:700; color:#1a1a1a; letter-spacing:-1px;">2 000 <span style="font-size:18px; font-weight:400; color:#888;">د.م</span></div>
+          <div style="font-size:12px; color:#aaa; margin-top:4px;">mis de côté ce mois</div>
+          <div style="margin-top:14px; display:inline-flex; align-items:center; gap:6px; background:#f5f9ff; border:1px solid #d0e4f8; border-radius:8px; padding:6px 14px;">
+            <span style="font-size:11px; color:#185FA5;">calculé : 2 340 د.م</span>
+            <span style="font-size:10px; color:#aaa;">·</span>
+            <span style="font-size:11px; color:#185FA5; text-decoration:underline;">modifier</span>
+          </div>
+        </div>
+
+        <div style="padding:20px;">
+          <div style="font-size:11px; color:#bbb; text-transform:uppercase; letter-spacing:.5px; margin-bottom:12px;">Revenus du mois</div>
+          <div style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid #f5f5f5;">
+            <span style="color:#555;">💼 Salaire</span><span style="font-weight:600;">8 000 د.م</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; padding:10px 0;">
+            <span style="color:#555;">💻 Freelance</span><span style="font-weight:600;">1 200 د.م</span>
+          </div>
+        </div>
+
+        <div style="background:#f9f9f9; padding:16px 20px;">
+          <div style="font-size:11px; color:#bbb; text-transform:uppercase; letter-spacing:.5px; margin-bottom:10px;">Historique</div>
+          <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #eee;">
+            <span style="color:#888;">Fév. 2026</span><span style="color:#1D9E75; font-weight:600;">1 800 د.م</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #eee;">
+            <span style="color:#888;">Jan. 2026</span><span style="color:#1D9E75; font-weight:600;">2 100 د.م</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; padding:10px 0; font-weight:700;">
+            <span>Total cumulé</span><span style="color:#185FA5;">5 900 د.م</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="mockup" data-choice="a" onclick="toggleSelect(this)" style="cursor:pointer; margin-top:1.5rem;">
+      <div class="mockup-header">📱 Simulateur — Objectif</div>
+      <div class="mockup-body" style="padding:0; font-size:13px; background:#ffffff;">
+        <div style="display:flex; border-bottom:1px solid #f0f0f0;">
+          <div style="flex:1; text-align:center; padding:12px; font-weight:700; color:#185FA5; border-bottom:2px solid #185FA5; font-size:13px;">Objectif</div>
+          <div style="flex:1; text-align:center; padding:12px; color:#bbb; font-size:13px;">Projection</div>
+        </div>
+        <div style="padding:20px; display:flex; flex-direction:column; gap:14px;">
+          <div>
+            <div style="font-size:11px; color:#bbb; margin-bottom:5px; text-transform:uppercase; letter-spacing:.5px;">Montant cible</div>
+            <div style="background:#f7f7f7; border-radius:10px; padding:12px 14px; font-size:20px; font-weight:600; color:#1a1a1a;">600 000 د.م</div>
+          </div>
+          <div style="display:flex; gap:10px;">
+            <div style="flex:1;">
+              <div style="font-size:11px; color:#bbb; margin-bottom:5px; text-transform:uppercase; letter-spacing:.5px;">Déjà épargné</div>
+              <div style="background:#f7f7f7; border-radius:10px; padding:12px 14px; font-weight:600;">5 900 د.م</div>
+            </div>
+            <div style="flex:1;">
+              <div style="font-size:11px; color:#bbb; margin-bottom:5px; text-transform:uppercase; letter-spacing:.5px;">Taux annuel</div>
+              <div style="background:#f7f7f7; border-radius:10px; padding:12px 14px; font-weight:600;">3.5 %</div>
+            </div>
+          </div>
+        </div>
+        <div style="margin:0 20px 20px; background:#185FA5; border-radius:12px; padding:18px; color:white;">
+          <div style="font-size:11px; opacity:.7; text-transform:uppercase; letter-spacing:.5px; margin-bottom:12px;">Résultat</div>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <span style="opacity:.8;">Épargner par mois</span><span style="font-size:20px; font-weight:700;">3 200 د.م</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span style="opacity:.8;">Atteint en</span><span style="font-weight:600;">14 ans · Juin 2040</span>
+          </div>
+        </div>
+        <div style="padding:0 20px 20px; display:flex; gap:8px;">
+          <div style="flex:1; text-align:center; padding:10px; background:#f7f7f7; border-radius:8px;">
+            <div style="font-size:10px; color:#aaa;">2 000/m</div>
+            <div style="font-weight:700; color:#BA7517;">23 ans</div>
+          </div>
+          <div style="flex:1; text-align:center; padding:10px; background:#f0f7ff; border-radius:8px; border:1.5px solid #185FA5;">
+            <div style="font-size:10px; color:#aaa;">3 200/m</div>
+            <div style="font-weight:700; color:#185FA5;">14 ans</div>
+          </div>
+          <div style="flex:1; text-align:center; padding:10px; background:#f7f7f7; border-radius:8px;">
+            <div style="font-size:10px; color:#aaa;">5 000/m</div>
+            <div style="font-weight:700; color:#1D9E75;">9 ans</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DIRECTION B — Sombre & contrasté -->
+  <div style="flex:1;">
+    <div style="text-align:center; margin-bottom:10px;">
+      <span style="background:#1a1a2e; color:white; border-radius:20px; padding:4px 14px; font-size:12px; font-weight:600;">Option B — Sombre & net</span>
+    </div>
+    <div class="mockup" data-choice="b" onclick="toggleSelect(this)" style="cursor:pointer;">
+      <div class="mockup-header">📱 Épargne</div>
+      <div class="mockup-body" style="padding:0; font-size:13px; background:#1a1a2e; color:#e8e8e8;">
+
+        <div style="padding:28px 20px 20px; text-align:center; border-bottom:1px solid #2e2e4a;">
+          <div style="font-size:12px; color:#666; letter-spacing:.5px; text-transform:uppercase; margin-bottom:6px;">Mars 2026</div>
+          <div style="font-size:36px; font-weight:700; color:#ffffff; letter-spacing:-1px;">2 000 <span style="font-size:18px; font-weight:400; color:#666;">د.م</span></div>
+          <div style="font-size:12px; color:#666; margin-top:4px;">mis de côté ce mois</div>
+          <div style="margin-top:14px; display:inline-flex; align-items:center; gap:6px; background:#2a2a40; border:1px solid #3a3a5a; border-radius:8px; padding:6px 14px;">
+            <span style="font-size:11px; color:#7fa8d8;">calculé : 2 340 د.م</span>
+            <span style="font-size:10px; color:#555;">·</span>
+            <span style="font-size:11px; color:#7fa8d8; text-decoration:underline;">modifier</span>
+          </div>
+        </div>
+
+        <div style="padding:20px;">
+          <div style="font-size:11px; color:#555; text-transform:uppercase; letter-spacing:.5px; margin-bottom:12px;">Revenus du mois</div>
+          <div style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid #2a2a40;">
+            <span style="color:#aaa;">💼 Salaire</span><span style="font-weight:600; color:#fff;">8 000 د.م</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; padding:10px 0;">
+            <span style="color:#aaa;">💻 Freelance</span><span style="font-weight:600; color:#fff;">1 200 د.م</span>
+          </div>
+        </div>
+
+        <div style="background:#141425; padding:16px 20px; border-top:1px solid #2a2a40;">
+          <div style="font-size:11px; color:#555; text-transform:uppercase; letter-spacing:.5px; margin-bottom:10px;">Historique</div>
+          <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #2a2a40;">
+            <span style="color:#666;">Fév. 2026</span><span style="color:#4ade80; font-weight:600;">1 800 د.م</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #2a2a40;">
+            <span style="color:#666;">Jan. 2026</span><span style="color:#4ade80; font-weight:600;">2 100 د.م</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; padding:10px 0; font-weight:700;">
+            <span style="color:#aaa;">Total cumulé</span><span style="color:#7fa8d8;">5 900 د.م</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="mockup" data-choice="b" onclick="toggleSelect(this)" style="cursor:pointer; margin-top:1.5rem;">
+      <div class="mockup-header">📱 Simulateur — Objectif</div>
+      <div class="mockup-body" style="padding:0; font-size:13px; background:#1a1a2e; color:#e8e8e8;">
+        <div style="display:flex; border-bottom:1px solid #2e2e4a;">
+          <div style="flex:1; text-align:center; padding:12px; font-weight:700; color:#7fa8d8; border-bottom:2px solid #7fa8d8; font-size:13px;">Objectif</div>
+          <div style="flex:1; text-align:center; padding:12px; color:#444; font-size:13px;">Projection</div>
+        </div>
+        <div style="padding:20px; display:flex; flex-direction:column; gap:14px;">
+          <div>
+            <div style="font-size:11px; color:#555; margin-bottom:5px; text-transform:uppercase; letter-spacing:.5px;">Montant cible</div>
+            <div style="background:#22223a; border-radius:10px; padding:12px 14px; font-size:20px; font-weight:600; color:#ffffff;">600 000 د.م</div>
+          </div>
+          <div style="display:flex; gap:10px;">
+            <div style="flex:1;">
+              <div style="font-size:11px; color:#555; margin-bottom:5px; text-transform:uppercase; letter-spacing:.5px;">Déjà épargné</div>
+              <div style="background:#22223a; border-radius:10px; padding:12px 14px; font-weight:600;">5 900 د.م</div>
+            </div>
+            <div style="flex:1;">
+              <div style="font-size:11px; color:#555; margin-bottom:5px; text-transform:uppercase; letter-spacing:.5px;">Taux annuel</div>
+              <div style="background:#22223a; border-radius:10px; padding:12px 14px; font-weight:600;">3.5 %</div>
+            </div>
+          </div>
+        </div>
+        <div style="margin:0 20px 20px; background:linear-gradient(135deg,#1e3a5f,#185FA5); border-radius:12px; padding:18px; color:white;">
+          <div style="font-size:11px; opacity:.6; text-transform:uppercase; letter-spacing:.5px; margin-bottom:12px;">Résultat</div>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <span style="opacity:.7;">Épargner par mois</span><span style="font-size:20px; font-weight:700;">3 200 د.م</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span style="opacity:.7;">Atteint en</span><span style="font-weight:600;">14 ans · Juin 2040</span>
+          </div>
+        </div>
+        <div style="padding:0 20px 20px; display:flex; gap:8px;">
+          <div style="flex:1; text-align:center; padding:10px; background:#22223a; border-radius:8px;">
+            <div style="font-size:10px; color:#555;">2 000/m</div>
+            <div style="font-weight:700; color:#f59e0b;">23 ans</div>
+          </div>
+          <div style="flex:1; text-align:center; padding:10px; background:#1e3a5f; border-radius:8px; border:1.5px solid #7fa8d8;">
+            <div style="font-size:10px; color:#777;">3 200/m</div>
+            <div style="font-weight:700; color:#7fa8d8;">14 ans</div>
+          </div>
+          <div style="flex:1; text-align:center; padding:10px; background:#22223a; border-radius:8px;">
+            <div style="font-size:10px; color:#555;">5 000/m</div>
+            <div style="font-weight:700; color:#4ade80;">9 ans</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<p style="margin-top:1.5rem; color:#555; text-align:center;">Clique sur A ou B, ou dis-moi dans le terminal ce que tu veux ajuster.</p>
