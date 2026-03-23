@@ -4,6 +4,7 @@ import {
   Alert, Share, TextInput,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { router } from 'expo-router';
 import {
   exportAllData, importAllData, saveSetting,
   addIncomeSource, updateIncomeSource, deleteIncomeSource,
@@ -163,6 +164,30 @@ export default function SettingsScreen() {
               <Text style={styles.addLabel}>Ajouter une source</Text>
             </TouchableOpacity>
           )}
+        </View>
+      </View>
+
+      {/* Outils */}
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Outils</Text>
+        <View style={styles.card}>
+          <TouchableOpacity style={styles.row} onPress={() => router.push('/forecast')}>
+            <Ionicons name="trending-up-outline" size={20} color="#185FA5" />
+            <View style={{ flex: 1, marginLeft: 12 }}>
+              <Text style={styles.rowTitle}>Prévisions</Text>
+              <Text style={styles.rowSub}>Projection de fin de mois</Text>
+            </View>
+            <Ionicons name="chevron-forward" size={16} color="#B4B2A9" />
+          </TouchableOpacity>
+          <View style={styles.separator} />
+          <TouchableOpacity style={styles.row} onPress={() => router.push('/simulator')}>
+            <Ionicons name="calculator-outline" size={20} color="#185FA5" />
+            <View style={{ flex: 1, marginLeft: 12 }}>
+              <Text style={styles.rowTitle}>Simulateur d'épargne</Text>
+              <Text style={styles.rowSub}>Objectif et projection à long terme</Text>
+            </View>
+            <Ionicons name="chevron-forward" size={16} color="#B4B2A9" />
+          </TouchableOpacity>
         </View>
       </View>
 

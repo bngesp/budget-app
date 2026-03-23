@@ -49,14 +49,6 @@ export default function RootLayout() {
             }}
           />
           <Tabs.Screen
-            name="forecast"
-            options={{
-              title: 'Prévisions',
-              tabBarIcon: ({ color, size }) => <Ionicons name="trending-up-outline" size={size} color={color} />,
-              tabBarLabel: 'Prévisions',
-            }}
-          />
-          <Tabs.Screen
             name="savings"
             options={{
               title: 'Épargne',
@@ -64,14 +56,8 @@ export default function RootLayout() {
               tabBarLabel: 'Épargne',
             }}
           />
-          <Tabs.Screen
-            name="simulator"
-            options={{
-              title: 'Simulateur',
-              tabBarIcon: ({ color, size }) => <Ionicons name="calculator-outline" size={size} color={color} />,
-              tabBarLabel: 'Simul.',
-            }}
-          />
+          <Tabs.Screen name="forecast" options={{ href: null, title: 'Prévisions' }} />
+          <Tabs.Screen name="simulator" options={{ href: null, title: 'Simulateur' }} />
           <Tabs.Screen
             name="settings"
             options={{
