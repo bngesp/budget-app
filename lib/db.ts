@@ -1,5 +1,5 @@
 import * as SQLite from 'expo-sqlite';
-import { Transaction, Category, Settings } from '../types';
+import { Transaction, Category, Settings, IncomeSource, SavingsEntry } from '../types';
 
 const DB_NAME = 'budget.db';
 
@@ -43,6 +43,22 @@ async function initDb(db: SQLite.SQLiteDatabase): Promise<void> {
 
     CREATE INDEX IF NOT EXISTS idx_txn_date ON transactions(date);
     CREATE INDEX IF NOT EXISTS idx_txn_type ON transactions(type);
+
+    CREATE TABLE IF NOT EXISTS income_sources (
+      id     INTEGER PRIMARY KEY AUTOINCREMENT,
+      name   TEXT    NOT NULL,
+      amount REAL    NOT NULL,
+      icon   TEXT    NOT NULL DEFAULT '💼',
+      active INTEGER NOT NULL DEFAULT 1
+    );
+
+    CREATE TABLE IF NOT EXISTS savings_entries (
+      id          INTEGER PRIMARY KEY AUTOINCREMENT,
+      month       TEXT    NOT NULL UNIQUE,
+      calculated  REAL    NOT NULL,
+      actual      REAL,
+      note        TEXT
+    );
   `);
 
   await seedDefaultCategories(db);
@@ -210,6 +226,87 @@ export async function saveSetting(key: string, value: string): Promise<void> {
   );
 }
 
+// ─── INCOME SOURCES ──────────────────────────────────────────────────────────
+
+export async function getIncomeSources(): Promise<IncomeSource[]> {
+  const db = await getDb();
+  return await db.getAllAsync<IncomeSource>(
+    'SELECT * FROM income_sources ORDER BY name'
+  );
+}
+
+export async function addIncomeSource(s: Omit<IncomeSource, 'id'>): Promise<number> {
+  const db = await getDb();
+  const result = await db.runAsync(
+    'INSERT INTO income_sources (name, amount, icon, active) VALUES (?, ?, ?, ?)',
+    [s.name, s.amount, s.icon, s.active]
+  );
+  return result.lastInsertRowId;
+}
+
+export async function updateIncomeSource(id: number, s: Partial<Omit<IncomeSource, 'id'>>): Promise<void> {
+  const db = await getDb();
+  const fields = Object.keys(s).map(k => `${k}=?`).join(', ');
+  await db.runAsync(
+    `UPDATE income_sources SET ${fields} WHERE id=?`,
+    [...Object.values(s), id]
+  );
+}
+
+export async function deleteIncomeSource(id: number): Promise<void> {
+  const db = await getDb();
+  await db.runAsync('DELETE FROM income_sources WHERE id=?', [id]);
+}
+
+export async function computeRealIncome(month: string): Promise<number> {
+  const db = await getDb();
+
+  // Sum of active income_sources (recurring)
+  const sourceRow = await db.getFirstAsync<{ total: number }>(
+    'SELECT COALESCE(SUM(amount), 0) as total FROM income_sources WHERE active = 1'
+  );
+  const sourcesTotal = sourceRow?.total ?? 0;
+
+  // Sum of income transactions for the month
+  const txnRow = await db.getFirstAsync<{ total: number }>(
+    `SELECT COALESCE(SUM(amount), 0) as total FROM transactions WHERE type = 'income' AND date LIKE ?`,
+    [`${month}%`]
+  );
+  const txnTotal = txnRow?.total ?? 0;
+
+  return sourcesTotal + txnTotal;
+}
+
+// ─── SAVINGS ENTRIES ─────────────────────────────────────────────────────────
+
+export async function getSavingsEntries(): Promise<SavingsEntry[]> {
+  const db = await getDb();
+  return await db.getAllAsync<SavingsEntry>(
+    'SELECT * FROM savings_entries ORDER BY month DESC'
+  );
+}
+
+export async function getSavingsEntry(month: string): Promise<SavingsEntry | null> {
+  const db = await getDb();
+  return await db.getFirstAsync<SavingsEntry>(
+    'SELECT * FROM savings_entries WHERE month = ?',
+    [month]
+  ) ?? null;
+}
+
+export async function upsertSavingsEntry(entry: Omit<SavingsEntry, 'id'>): Promise<void> {
+  const db = await getDb();
+  await db.runAsync(
+    `INSERT INTO savings_entries (month, calculated, actual, note)
+     VALUES (?, ?, ?, ?)
+     ON CONFLICT(month) DO UPDATE SET
+       calculated = excluded.calculated,
+       actual     = excluded.actual,
+       note       = excluded.note`,
+    [entry.month, entry.calculated, entry.actual ?? null, entry.note ?? null]
+  );
+}
+
 // ─── EXPORT / IMPORT ─────────────────────────────────────────────────────────
 
 export async function exportAllData(): Promise<string> {
@@ -217,14 +314,22 @@ export async function exportAllData(): Promise<string> {
   const transactions = await db.getAllAsync('SELECT * FROM transactions');
   const categories = await db.getAllAsync('SELECT * FROM categories');
   const settings = await db.getAllAsync('SELECT * FROM settings');
-  return JSON.stringify({ transactions, categories, settings, exportedAt: new Date().toISOString() }, null, 2);
+  const incomeSources = await db.getAllAsync('SELECT * FROM income_sources');
+  const savingsEntries = await db.getAllAsync('SELECT * FROM savings_entries');
+  return JSON.stringify(
+    { transactions, categories, settings, incomeSources, savingsEntries, exportedAt: new Date().toISOString() },
+    null,
+    2
+  );
 }
 
 export async function importAllData(json: string): Promise<void> {
   const data = JSON.parse(json);
   const db = await getDb();
 
-  await db.execAsync('DELETE FROM transactions; DELETE FROM categories; DELETE FROM settings;');
+  await db.execAsync(
+    'DELETE FROM transactions; DELETE FROM categories; DELETE FROM settings; DELETE FROM income_sources; DELETE FROM savings_entries;'
+  );
 
   for (const t of data.transactions || []) {
     await db.runAsync(
@@ -240,5 +345,17 @@ export async function importAllData(json: string): Promise<void> {
   }
   for (const s of data.settings || []) {
     await db.runAsync('INSERT INTO settings (key, value) VALUES (?,?)', [s.key, s.value]);
+  }
+  for (const s of data.incomeSources || []) {
+    await db.runAsync(
+      'INSERT INTO income_sources (id, name, amount, icon, active) VALUES (?,?,?,?,?)',
+      [s.id, s.name, s.amount, s.icon, s.active]
+    );
+  }
+  for (const e of data.savingsEntries || []) {
+    await db.runAsync(
+      'INSERT INTO savings_entries (id, month, calculated, actual, note) VALUES (?,?,?,?,?)',
+      [e.id, e.month, e.calculated, e.actual ?? null, e.note ?? null]
+    );
   }
 }
