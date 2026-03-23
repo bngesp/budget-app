@@ -3,14 +3,24 @@ import {
   View, Text, StyleSheet, ScrollView, TouchableOpacity,
   Alert, Share, TextInput,
 } from 'react-native';
-import * as FileSystem from 'expo-file-system';
 import { Ionicons } from '@expo/vector-icons';
-import { exportAllData, importAllData, saveSetting } from '../lib/db';
+import {
+  exportAllData, importAllData, saveSetting,
+  addIncomeSource, updateIncomeSource, deleteIncomeSource,
+} from '../lib/db';
+
 import { useApp } from '../context/AppContext';
+import { fmtAmount } from '../lib/utils';
 
 export default function SettingsScreen() {
-  const { settings, refresh } = useApp();
+  const { settings, incomeSources, refresh } = useApp();
   const [income, setIncome] = useState(settings.monthlyIncome.toString());
+
+  // ── Income sources state ──
+  const [addingSource, setAddingSource] = useState(false);
+  const [newName, setNewName] = useState('');
+  const [newAmount, setNewAmount] = useState('');
+  const [newIcon, setNewIcon] = useState('💼');
 
   async function handleExport() {
     try {
@@ -27,6 +37,33 @@ export default function SettingsScreen() {
     await saveSetting('monthlyIncome', val.toString());
     await refresh();
     Alert.alert('✓', 'Paramètres sauvegardés');
+  }
+
+  async function handleAddSource() {
+    const amt = parseFloat(newAmount);
+    if (!newName.trim()) return Alert.alert('Erreur', 'Le nom est requis.');
+    if (!amt || amt <= 0) return Alert.alert('Erreur', 'Montant invalide.');
+    await addIncomeSource({ name: newName.trim(), amount: amt, icon: newIcon, active: 1 });
+    setNewName('');
+    setNewAmount('');
+    setNewIcon('💼');
+    setAddingSource(false);
+    await refresh();
+  }
+
+  async function handleToggleSource(id: number, active: number) {
+    await updateIncomeSource(id, { active: active === 1 ? 0 : 1 });
+    await refresh();
+  }
+
+  async function handleDeleteSource(id: number, name: string) {
+    Alert.alert('Supprimer', `Supprimer « ${name} » ?`, [
+      { text: 'Annuler', style: 'cancel' },
+      { text: 'Supprimer', style: 'destructive', onPress: async () => {
+        await deleteIncomeSource(id);
+        await refresh();
+      }},
+    ]);
   }
 
   async function handleReset() {
@@ -60,6 +97,72 @@ export default function SettingsScreen() {
           <TouchableOpacity style={styles.btn} onPress={handleSaveSettings}>
             <Text style={styles.btnLabel}>Enregistrer</Text>
           </TouchableOpacity>
+        </View>
+      </View>
+
+      {/* Income sources */}
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Revenus récurrents</Text>
+        <View style={styles.card}>
+          {incomeSources.length === 0 && !addingSource && (
+            <Text style={styles.empty}>Aucune source de revenu configurée.</Text>
+          )}
+          {incomeSources.map(src => (
+            <View key={src.id} style={styles.sourceRow}>
+              <Text style={styles.sourceIcon}>{src.icon}</Text>
+              <View style={{ flex: 1, marginLeft: 10 }}>
+                <Text style={[styles.sourceName, src.active === 0 && styles.inactive]}>{src.name}</Text>
+                <Text style={styles.sourceAmt}>{fmtAmount(src.amount, settings.currencySymbol)}/mois</Text>
+              </View>
+              <TouchableOpacity onPress={() => handleToggleSource(src.id, src.active)} style={styles.iconBtn}>
+                <Ionicons name={src.active === 1 ? 'eye-outline' : 'eye-off-outline'} size={18} color={src.active === 1 ? '#1D9E75' : '#B4B2A9'} />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => handleDeleteSource(src.id, src.name)} style={styles.iconBtn}>
+                <Ionicons name="trash-outline" size={18} color="#E24B4A" />
+              </TouchableOpacity>
+            </View>
+          ))}
+
+          {addingSource && (
+            <View style={styles.addForm}>
+              <View style={styles.addFormRow}>
+                <TextInput
+                  style={[styles.input, { flex: 1, marginRight: 8 }]}
+                  value={newName}
+                  onChangeText={setNewName}
+                  placeholder="Nom (ex: Salaire)"
+                />
+                <TextInput
+                  style={[styles.input, { width: 90 }]}
+                  value={newIcon}
+                  onChangeText={setNewIcon}
+                  placeholder="💼"
+                />
+              </View>
+              <TextInput
+                style={styles.input}
+                value={newAmount}
+                onChangeText={setNewAmount}
+                keyboardType="decimal-pad"
+                placeholder="Montant mensuel"
+              />
+              <View style={styles.addFormActions}>
+                <TouchableOpacity style={styles.btnSecondary} onPress={() => setAddingSource(false)}>
+                  <Text style={styles.btnSecondaryLabel}>Annuler</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={[styles.btn, { flex: 1, marginLeft: 8 }]} onPress={handleAddSource}>
+                  <Text style={styles.btnLabel}>Ajouter</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          )}
+
+          {!addingSource && (
+            <TouchableOpacity style={styles.addRow} onPress={() => setAddingSource(true)}>
+              <Ionicons name="add-circle-outline" size={18} color="#185FA5" />
+              <Text style={styles.addLabel}>Ajouter une source</Text>
+            </TouchableOpacity>
+          )}
         </View>
       </View>
 
@@ -129,4 +232,18 @@ const styles = StyleSheet.create({
   infoRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 2 },
   infoLabel: { fontSize: 13, color: '#888780' },
   infoValue: { fontSize: 13, color: '#2C2C2A', fontWeight: '500' },
+  sourceRow: { flexDirection: 'row', alignItems: 'center', paddingVertical: 8, borderBottomWidth: 0.5, borderBottomColor: '#F1EFE8' },
+  sourceIcon: { fontSize: 20, width: 28, textAlign: 'center' },
+  sourceName: { fontSize: 14, color: '#2C2C2A', fontWeight: '500' },
+  sourceAmt: { fontSize: 12, color: '#888780', marginTop: 2 },
+  inactive: { color: '#B4B2A9', textDecorationLine: 'line-through' },
+  iconBtn: { padding: 6, marginLeft: 4 },
+  addRow: { flexDirection: 'row', alignItems: 'center', paddingTop: 12, gap: 8 },
+  addLabel: { color: '#185FA5', fontSize: 14, fontWeight: '500' },
+  addForm: { marginTop: 10, gap: 8 },
+  addFormRow: { flexDirection: 'row', alignItems: 'center' },
+  addFormActions: { flexDirection: 'row', marginTop: 4 },
+  btnSecondary: { flex: 1, borderWidth: 1, borderColor: '#D3D1C7', borderRadius: 8, paddingVertical: 10, alignItems: 'center' },
+  btnSecondaryLabel: { color: '#888780', fontSize: 14, fontWeight: '500' },
+  empty: { color: '#B4B2A9', fontSize: 13, textAlign: 'center', paddingVertical: 8 },
 });

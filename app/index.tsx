@@ -9,7 +9,7 @@ import { useApp } from '../context/AppContext';
 import { fmtAmount, fmtDate, currentMonthLabel, getCategoryColor } from '../lib/utils';
 
 export default function DashboardScreen() {
-  const { transactions, categories, settings, summary, currentMonth, loading } = useApp();
+  const { transactions, categories, settings, summary, currentMonth, loading, savingsHistory } = useApp();
 
   if (loading) {
     return <View style={styles.center}><ActivityIndicator size="large" color="#185FA5" /></View>;
@@ -18,6 +18,10 @@ export default function DashboardScreen() {
   const balanceColor = summary.balance >= 0 ? '#1D9E75' : '#E24B4A';
   const savingsRate = summary.totalIncome > 0
     ? Math.round((summary.balance / summary.totalIncome) * 100) : 0;
+  const totalCumulated = savingsHistory.reduce(
+    (sum, e) => sum + (e.actual ?? e.calculated),
+    0
+  );
 
   const topCats = Object.entries(summary.byCategory)
     .sort((a, b) => b[1] - a[1])
@@ -56,6 +60,17 @@ export default function DashboardScreen() {
           </Text>
         </View>
       </View>
+
+      {/* Cumulated savings */}
+      {totalCumulated > 0 && (
+        <View style={[styles.card, styles.savingsCard]}>
+          <View style={{ flex: 1 }}>
+            <Text style={styles.savingsLabel}>Épargne cumulée</Text>
+            <Text style={styles.savingsValue}>{fmtAmount(totalCumulated, settings.currencySymbol)}</Text>
+          </View>
+          <Ionicons name="save-outline" size={22} color="#185FA5" />
+        </View>
+      )}
 
       {/* Top categories */}
       {topCats.length > 0 && (
@@ -158,4 +173,7 @@ const styles = StyleSheet.create({
   txnAmt: { fontSize: 14, fontWeight: '600' },
   empty: { textAlign: 'center', color: '#888780', fontSize: 13, paddingVertical: 16 },
   fab: { position: 'absolute', bottom: 24, right: 24, width: 56, height: 56, borderRadius: 28, backgroundColor: '#185FA5', alignItems: 'center', justifyContent: 'center', shadowColor: '#185FA5', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.3, shadowRadius: 8, elevation: 8 },
+  savingsCard: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#f5f9ff', borderColor: '#d0e4f8' },
+  savingsLabel: { fontSize: 11, color: '#185FA5', marginBottom: 4 },
+  savingsValue: { fontSize: 18, fontWeight: '700', color: '#185FA5' },
 });
