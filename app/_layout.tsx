@@ -57,6 +57,22 @@ export default function RootLayout() {
             }}
           />
           <Tabs.Screen
+            name="savings"
+            options={{
+              title: 'Épargne',
+              tabBarIcon: ({ color, size }) => <Ionicons name="save-outline" size={size} color={color} />,
+              tabBarLabel: 'Épargne',
+            }}
+          />
+          <Tabs.Screen
+            name="simulator"
+            options={{
+              title: 'Simulateur',
+              tabBarIcon: ({ color, size }) => <Ionicons name="calculator-outline" size={size} color={color} />,
+              tabBarLabel: 'Simul.',
+            }}
+          />
+          <Tabs.Screen
             name="settings"
             options={{
               title: 'Paramètres',
